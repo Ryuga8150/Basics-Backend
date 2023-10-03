@@ -1,6 +1,9 @@
 const fs = require("fs");
-// const fileData = fs.readFileSync(`${__dirname}../data/tours-simple.json`);
-// const data = JSON.parse(fileData);
+const path = require("path");
+//const Path = path.join(__dirname, path.relative("./data/tours-simple.json"));
+//console.log(Path);
+//const fileData = fs.readFileSync(Path);
+//const data = JSON.parse(fileData);
 //console.log(typeof data);
 //console.log(fileData.map((el) => el.id));
 
