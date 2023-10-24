@@ -1,14 +1,14 @@
-const AppError=require("./../utils/appError");
+const AppError = require("./../utils/appError");
 
 // Could also implement level of errors
 // in case of critical can report to some other person
 
-const handleCastErrorDB=err=>{
-  const message=`Invalid ${err.path}: ${err.value}.`;
-  return new AppError(message,400);
-}
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
+  return new AppError(message, 400);
+};
 
-const handleDuplicateFieldsDB=err=>{
+const handleDuplicateFieldsDB = (err) => {
   // const value=err.errmsg.match(/(.*?)/);
   // console.log(value);
   // const message=`Duplicate field value: x. Please use another value!`
@@ -18,13 +18,21 @@ const handleDuplicateFieldsDB=err=>{
   //console.log(value);
   const message = `Duplicate field value: ${value}. Please use another value`;
   return new AppError(message, 400);
-}
+};
 
-const handleValidationErrorDB=err=>{
-  const errors=Object.values(err.errors).map(el=>el.message);
-  const message=`Invalid input data. ${errors.join('. ')}`;
-  return new AppError(message,400);
-}
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
+  const message = `Invalid input data. ${errors.join(". ")}`;
+  return new AppError(message, 400);
+};
+
+const handleJWTError = () => {
+  return new AppError("Invalid token. Please login!", 401);
+};
+const handleJWTExpiredError = () => {
+  return new AppError("Your token has expired!. Please login again !", 401);
+};
+
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -72,7 +80,7 @@ module.exports = (err, req, res, next) => {
     // use real error
 
     //let error={...err,name:err.name};
-    let error=Object.create(err);
+    let error = Object.create(err);
     //console.log({...err})
     // after destructuring we couldn't get err.name property from that
 
@@ -80,17 +88,20 @@ module.exports = (err, req, res, next) => {
     // console.log(err);
     // console.log("error");
     //console.log(error);
-    
+
     // console.log(err.name);
 
     // the name property errors are from mongoose
-    if(error.name==='CastError') error=handleCastErrorDB(error);
-    if(error.code === 11000) error=handleDuplicateFieldsDB(error);
-  
-    if(error.name==='ValidationError') error=handleValidationErrorDB(error);
+    if (error.name === "CastError") error = handleCastErrorDB(error);
+    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+
+    if (error.name === "ValidationError")
+      error = handleValidationErrorDB(error);
+    if (error.name === "JsonWebTokenError") error = handleJWTError();
+    if (error.name === "TokenExpiredError") error = handleJWTExpiredError();
 
     sendErrorProd(error, res);
-  }else{
-    console.log("Invalid error environment")
+  } else {
+    console.log("Invalid error environment");
   }
 };
