@@ -8,6 +8,7 @@ const hpp = require("hpp");
 
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
+const reviewRouter = require("./routes/reviewRoutes");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
@@ -73,6 +74,7 @@ app.use((req, res, next) => {
 
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
+app.use("/api/v1/reviews", reviewRouter);
 
 // for handling not found
 app.all("*", (req, res, next) => {
