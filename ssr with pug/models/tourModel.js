@@ -62,7 +62,7 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       required: [true, "A tour must have a summary"],
     },
-    desription: {
+    description: {
       type: String,
       trim: true,
     },
@@ -75,27 +75,27 @@ const tourSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    startDate: [Date],
+    startDates: [Date],
     secretTour: {
       type: Boolean,
       default: false,
     },
     //G GEO SPATIAL DATA
     //Embedded data
-    // startLocation: {
-    //   // GeoJSON
-    //   // requirements type and coordinates field
-    //   type: {
-    //     type: String,
-    //     // default: "Point",
-    //     enum: ["Point"],
-    //   },
-    //   coordinates: {
-    //     type: [Number],
-    //   },
-    //   // address: String,
-    //   // description: String,
-    // },
+    startLocation: {
+      // GeoJSON
+      // requirements type and coordinates field
+      type: {
+        type: String,
+        // default: "Point",
+        enum: ["Point"],
+      },
+      coordinates: {
+        type: [Number],
+      },
+      address: String,
+      description: String,
+    },
     // startLocation: {
     //   type: {
     //     type: String, // Don't do `{ location: { type: String } }`
@@ -109,21 +109,21 @@ const tourSchema = new mongoose.Schema(
     // },
 
     // GEO JSON not working
-    // locations: [
-    //   {
-    //     // GeoJSON
-    //     // requirements type and coordinates field
-    //     type: {
-    //       type: String,
-    //       default: "Point",
-    //       enum: ["Point"],
-    //     },
-    //     coordinates: [Number],
-    //     address: String,
-    //     description: String,
-    //     day: Number,
-    //   },
-    // ],
+    locations: [
+      {
+        // GeoJSON
+        // requirements type and coordinates field
+        type: {
+          type: String,
+          default: "Point",
+          enum: ["Point"],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
     // For embedding
     // guides: Array,
 

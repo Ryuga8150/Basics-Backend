@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const morgan = require("morgan");
 const rateLimit = require("express-rate-limit");
@@ -5,13 +6,25 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
+const cookieParser = require("cookie-parser");
 
 const tourRouter = require("./routes/tourRoutes");
 const userRouter = require("./routes/userRoutes");
 const reviewRouter = require("./routes/reviewRoutes");
+const viewRouter = require("./routes/viewRoutes");
 const globalErrorHandler = require("./controllers/errorController");
 
 const app = express();
+
+app.set("view engine", "pug");
+// console.log(__dirname);
+
+app.set("views", path.join(__dirname, "views")); // need from root module
+// join is used as to prevent the error whether the path contains a / or not
+
+// Serving static files
+// app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, "public")));
 
 // 1) GLOBAL MIDDLEWARES
 
@@ -31,6 +44,10 @@ app.use("/api", limiter);
 
 // Data sanitization against NOSQL query injection
 
+// BODY PARSER, reading data from body into req.
+// limit set to req.body data's
+app.use(express.json({ limit: "10kb" }));
+app.use(cookieParser());
 // Problem
 // we know password then we write email as email:{gt:""}
 // and we are logged in which is an error
@@ -59,19 +76,16 @@ app.use(
   })
 );
 
-// BODY PARSER, reading data from body into req.
-// limit set to req.body data's
-app.use(express.json({ limit: "10kb" }));
-
-// Serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // Test Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  console.log(req.cookies);
+
   next();
 });
+// 3) Routes
 
+app.use("/", viewRouter);
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/reviews", reviewRouter);
