@@ -2,16 +2,15 @@ const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 //import mongoose from "mongoose";
 
-process.on('uncaughtException',err=>{
+process.on("uncaughtException", (err) => {
   console.log("Uncaught Exception! Shutting down...");
-  console.log(err.name,err.message);
+  console.log(err.name, err.message);
   process.exit(1);
-  
-})
+});
 
 dotenv.config({ path: "./config.env" });
 const app = require("./app");
-
+console.log(process.env);
 const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSWORD
@@ -44,8 +43,8 @@ mongoose
 //   .then((doc) => console.log(doc))
 //   .catch((err) => console.log(err));
 
-const PORT=process.env.PORT || 3000;
-const server=app.listen(PORT, () => {
+const PORT = process.env.PORT || 3000;
+const server = app.listen(PORT, () => {
   console.log(`Server started listening at ${process.env.PORT}`);
 });
 
@@ -53,14 +52,14 @@ const server=app.listen(PORT, () => {
 // every error gets carried on process.on which could be used if not handled
 
 // this is for async code
-process.on('unhandledRejection',err=>{
+process.on("unhandledRejection", (err) => {
   console.log("Unhandled Rejection! Shutting down...");
-  console.log(err.name,err.message);
+  console.log(err.name, err.message);
 
-  server.close(()=>{
+  server.close(() => {
     process.exit(1);
-  })
-})
+  });
+});
 
 // Moving on top so we can set listen earlier
 // process.on('uncaughtException',err=>{
