@@ -47,6 +47,8 @@ app.use("/api", limiter);
 // BODY PARSER, reading data from body into req.
 // limit set to req.body data's
 app.use(express.json({ limit: "10kb" }));
+// for parsing data in form data
+app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
 // Problem
 // we know password then we write email as email:{gt:""}
